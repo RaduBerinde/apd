@@ -236,6 +236,7 @@ var GDAfiles = []string{
 	"divide",
 	"divideint",
 	"exp",
+	"ln",
 	"minus",
 	"multiply",
 	"plus",
@@ -969,6 +970,9 @@ var GDAignore = map[string]bool{
 	"addx61633": true,
 	"addx61634": true,
 	"addx61638": true,
+
+	// extreme input range, but should work
+	"lnx0902": true,
 }
 
 var GDAignoreFlags = map[string]bool{
