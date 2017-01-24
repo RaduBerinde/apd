@@ -479,6 +479,9 @@ func gdaTest(t *testing.T, path string, tcs []TestCase) {
 			case <-time.After(time.Second * 120):
 				t.Fatalf("timeout")
 			}
+			if d.Coeff.Sign() < 0 {
+				t.Fatalf("negative coeff: %s", d.Coeff.String())
+			}
 			// Verify the operands didn't change.
 			for i, o := range tc.Operands {
 				v := newDecimal(t, opctx, o)
@@ -609,12 +612,9 @@ func gdaTest(t *testing.T, path string, tcs []TestCase) {
 				// Some operations allow 1ulp of error in tests.
 				switch tc.Operation {
 				case "exp", "ln", "log10", "power":
-					if d.Cmp(r) < 0 {
-						d.Coeff.Add(&d.Coeff, bigOne)
-					} else {
-						r.Coeff.Add(&r.Coeff, bigOne)
-					}
-					if d.Cmp(r) == 0 {
+					nc := c.WithPrecision(0)
+					nc.Sub(d, d, r)
+					if d.Coeff.Cmp(bigOne) == 0 {
 						t.Logf("pass: within 1ulp: %s, %s", d, r)
 						return
 					}
